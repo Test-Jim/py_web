@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" type="image/png" href="/static/images/cyb.ico">
+	<title>需求空间</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <link href="/static/css/bootstrap.css" rel="stylesheet" />
+    <link href="/static/css/fresh-bootstrap-table.css" rel="stylesheet" />
+    <!--     Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<style>
+    .white_content {
+    display: none;
+    position: absolute;
+    top: 200px;
+    left: 25%;
+    width: 300px;
+    height: 300px;
+    padding: 20px;
+    border: 10px solid orange;
+    background-color: white;
+    z-index:1002;
+    overflow: auto;
+}
+    #close{
+    position:absolute;
+    width:50px;
+    height:35px;
+    border:none;
+    background-image:url(/static/images/close.png);
+    top:80%;
+    left:70%;
+    }
+    #update{
+    position:absolute;
+    width:50px;
+    height:35px;
+    border:none;
+    background-image:url(/static/images/close.png);
+    top:80%;
+    left:10%;
+    }
+    select{
+      border: solid 1px #000;
+      appearance:none;
+      -moz-appearance:none;
+      -webkit-appearance:none;
+      background: url("http://ourjs.github.io/static/2015/arrow.png") no-repeat scroll right center transparent;
+      padding-right: 14px;
+    }
+</style>
+</head>
+<body style="background: url(/static/images/login_bgx.gif)">
+<div class="wrapper">
+    <div class="container">
+        <div class="row">
+            <label>
+                <select id="colo" onchange=myfunchange()>
+                    <option value="fresh-table full-color-gray">灰暗</option>
+                    <option value="fresh-table full-color-red">红色</option>
+                    <option value="fresh-table full-color-orange">橘橙</option>
+                    <option value="fresh-table full-color-green">绿色</option>
+                    <option value="fresh-table full-color-azure">蔚蓝</option>
+                </select>
+            </label>
+            <div class="col-md-9 col-md-offset-1" >
+                <div class="fresh-table full-color-gray" id="sele">
+                    {%if need_tester%}
+                        <div class="toolbar">
+                            <button id="alertBtn" class="btn btn-default">当前登录用户：{{need_tester}}</button>
+                        </div>
+                    {%endif%}
+                    <table id="fresh-table" class="table">
+                        <thead>
+                            <th data-field="id">需求ID</th>
+                        	<th data-field="name" data-sortable="true">需求名称</th>
+                        	<th data-field="salary" data-sortable="true">需求状态</th>
+                        	<th data-field="country" data-sortable="true">完成状态</th>
+                        	<th data-field="city">上线时间</th>
+                            <th data-field="beizhu">备注</th>
+                        	<th data-field="actions" data-formatter="operateFormatter" data-events="operateEvents">操作</th>
+                        </thead>
+                        <tbody id='needdata'>
+                            <div id="light_2" class="white_content" style="background: url('/static/images/login_bgx.gif')">
+                                <form id="light" action='/update/' method='post' class="pull-right">
+                                    {% csrf_token %}
+                                </form>
+                            </div>
+                        {%if needs%}
+                        {% for need in needs %}
+                                <tr>
+                                <td>{{need.need_id}}</td>
+                                <td><a href={{need.need_url}} target="_blank">{{need.need_name}}</a></td>
+                                <td>{{need.need_status}}</td>
+                            	<td>{{need.finish_test}}</td>
+                            	<td>{{need.need_day}}</td>
+                            	<td>{{need.beizhu}}</td>
+                                </tr>
+                        {% endfor %}
+                        {% endif%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="/static/js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap-table.js"></script>
+    <script type="text/javascript">
+        var $table = $('#fresh-table'),
+            $alertBtn = $('#alertBtn'),
+            full_screen = false;
+        $(document).ready(function(){
+            $table.bootstrapTable({
+                toolbar: ".toolbar",
+                showRefresh: false,
+                search: true,
+                showToggle: true,
+                showColumns: true,
+                pagination: true,
+                striped: true,
+                pageSize: 8,
+                pageList: [8,10,25,50,100],
+                formatShowingRows: function(pageFrom, pageTo, totalRows){
+                    //do nothing here, we don't want to show the text "showing x of y from..."
+                },
+                formatRecordsPerPage: function(pageNumber){
+                    return pageNumber + "当前页条数";
+                },
+                icons: {
+                    refresh: 'fa fa-refresh',
+                    toggle: 'fa fa-th-list',
+                    columns: 'fa fa-columns',
+                    detailOpen: 'fa fa-plus-circle',
+                    detailClose: 'fa fa-minus-circle'
+                }
+            });
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView');
+            });
+
+            $alertBtn.click(function () {
+                alert("是不是在心底里默默叫出了爸爸？不客气！");
+            });
+        });
+        function operateFormatter(value, row, index) {
+            return [
+                '<a rel="tooltip" title="Edit" class="table-action edit" href="javascript:void(0)" title="Edit">',
+                    '<i class="fa fa-edit"></i>',
+                '</a>'
+            ].join('');
+        }
+        function myfunopen(e,value,row,index){
+            document.getElementById('light_2').style.display='block';
+            document.getElementById('light').innerHTML= "<input type='button' value='关闭' id='close' onclick=myfunclose()>" +
+            "<p>需求名称:"+row['name']+"</p>"+
+            "<p>状态编辑:<select name='status'><option value='未完成'>未完成</option><option value='已完成'>已完成</option><option value='测试中'>测试中</option></select></p>"+
+            "<p>上线时间:"+row['city']+"</p>"+
+            "<input name='needid' readonly='true' type='hidden' value="+row['id']+">"+
+            "<p>备注:<input name='beizhu' type='text' ></p>"+
+            "<input type='submit' value='提交' name='update' id='update' onclick=myfunclose()>"
+        }
+
+        function myfunchange(){
+            var t=document.getElementById('colo');
+            var aa=t.options[t.selectedIndex].value;
+            document.getElementById('sele').setAttribute('class',aa);
+            document.execCommand('Refresh');
+        }
+        function myfunclose(){
+        document.getElementById('light_2').style.display='none';
+        }
+        window.operateEvents = {
+                'click .edit': function (e, value, row, index) {
+                    myfunopen(e, value, row, index);
+                }
+            };
+    </script>
+</html>

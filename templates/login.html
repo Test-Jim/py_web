@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>车源宝测试组</title>
+	<link rel="stylesheet" type="text/css" href="/static/css/style_log.css">
+	<link rel='icon' href='/static/images/cyb.ico' type='image/x-ico'/>
+        {% load staticfiles %}
+	</head>
+
+<body class="login"  style="background:url(/static/images/login_bgx.gif)" >
+<div class="login_m">
+<div class="login_logo"><img src="/static/images/logo.png" width="196" height="46"></div>
+<div class="login_boder">
+
+<div class="login_padding" id="login_model">
+  <form action="/index/" method="post">
+      {% csrf_token %}
+    <h2>用户手机号</h2>
+    <input type="text" id="username" name='userPhone'  maxlength="11" class="txt_input txt_input2" onfocus="if (value =='用户手机号'){value =''}" onblur="if (value ==''){value='用户手机号'}" value="用户手机号" pattern ="^1\d{10}$">
+    <h2>密码</h2>
+    <input type="password" id="userpwd" name="userPwd" maxlength="30" class="txt_input"  onfocus="if (value =='******'){value =''}" onblur="if (value ==''){value='******'}" value="******">
+      {% if messages %}
+          <p style="color: red">帐号或者密码错误！</p>
+      {%endif%}
+    <p class="forgot"></p>
+    <div class="rem_sub">
+        <div class="rem_sub_l">
+          <input type="checkbox" name="checkbox" id="save_me">
+          <label for="checkbox">记住密码</label>
+        </div>
+        <label>
+          <input type="submit" class="sub_button" name="button" id="button" value="登录" style="opacity: 0.7;background:url(/static/images/site_bg.png)  no-repeat -153px -850px">
+        </label>
+    </div>
+  </form>
+</div>
+
+<!--login_padding  Sign up end-->
+</div><!--login_boder end-->
+</div><!--login_m end-->
+</body>
+</html>
